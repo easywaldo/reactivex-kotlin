@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toFlux
 
 @RestController
 class BookController(
@@ -37,9 +38,17 @@ class BookController(
 
 
     // R2DBC URI
-    @GetMapping("/r2/{name}")
+    @GetMapping("/r2/books/{name}")
     fun getByName(@PathVariable name: String): Mono<BookEntity> {
         return bookRepository.findByName(name)
     }
 
+    @PostMapping("/r2/books")
+    fun create(@RequestBody map: Map<String, Any>): Mono<BookEntity> {
+        val bookEntity = BookEntity(
+            name=map["name"].toString(),
+            price = map["price"] as Int
+        )
+        return bookRepository.save(bookEntity)
+    }
 }

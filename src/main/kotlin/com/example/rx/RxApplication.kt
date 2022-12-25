@@ -15,7 +15,7 @@ class RxApplication
 fun init(connectionFactory: ConnectionFactory) =
 	ConnectionFactoryInitializer().apply {
 		setConnectionFactory(connectionFactory)
-		setDatabasePopulator(ResourceDatabasePopulator(ClassPathResource("scripts/schema.sql")))
+		setDatabasePopulator(ResourceDatabasePopulator(ClassPathResource("schema.sql")))
 	}
 
 fun main(args: Array<String>) {
