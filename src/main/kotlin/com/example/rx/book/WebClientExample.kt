@@ -6,6 +6,8 @@ import org.springframework.http.HttpMethod
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Flux
 
 @RestController
 class WebClientExample {
@@ -25,5 +27,21 @@ class WebClientExample {
         log.info("result : {}", result)
         log.info("Finish RestTemplated")
         return result
+    }
+
+    @GetMapping("/books/nonBlock")
+    fun getBooksNonBlockingWay(): Flux<Book> {
+        log.info("Start WebClient")
+        val flux = WebClient.create()
+            .get()
+            .uri(url)
+            .retrieve()
+            .bodyToFlux(Book::class.java)
+            .map {
+                log.info("result: {}", it)
+                it
+            }
+        log.info("Finish WebClient")
+        return flux
     }
 }
