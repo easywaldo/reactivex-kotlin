@@ -51,4 +51,10 @@ class BookController(
         )
         return bookRepository.save(bookEntity)
     }
+
+    @GetMapping("/r2/books")
+    fun getAllByR2DBC(): Flux<BookEntity> {
+        return bookRepository.findAll()
+    }
+
 }
