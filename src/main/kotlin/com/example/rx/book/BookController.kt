@@ -1,5 +1,6 @@
 package com.example.rx.book
 
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -25,6 +26,11 @@ class BookController(
     @PostMapping("/books")
     fun add(@RequestBody addBookCommand: Map<String, Any>) : Mono<Book> {
         return bookService.add(addBookCommand)
+    }
+
+    @DeleteMapping("/books/{id}")
+    fun delete(@PathVariable id: Int): Mono<Void> {
+        return bookService.delete(id)
     }
 
 }

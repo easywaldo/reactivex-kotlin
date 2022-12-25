@@ -40,4 +40,10 @@ class BookService {
             }
     }
 
+    fun delete(id: Int): Mono<Void> {
+        return Mono.justOrEmpty(books.find { it.id == id })
+            .map { books.remove(it) }
+            .then()
+    }
+
 }
