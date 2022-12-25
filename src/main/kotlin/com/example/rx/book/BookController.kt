@@ -2,6 +2,8 @@ package com.example.rx.book
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -18,6 +20,11 @@ class BookController(
     @GetMapping("/books/{id}")
     fun get(@PathVariable id: Int) : Mono<Book> {
         return bookService.get(id)
+    }
+
+    @PostMapping("/books")
+    fun add(@RequestBody addBookCommand: Map<String, Any>) : Mono<Book> {
+        return bookService.add(addBookCommand)
     }
 
 }
