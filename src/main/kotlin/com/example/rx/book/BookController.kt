@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono
 @RestController
 class BookController(
     private val bookService: BookService,
+    private val bookRepository: BookEntityRepository,
 ) {
     @GetMapping("/books")
     fun getAll(): Flux<Book> {
@@ -31,6 +32,14 @@ class BookController(
     @DeleteMapping("/books/{id}")
     fun delete(@PathVariable id: Int): Mono<Void> {
         return bookService.delete(id)
+    }
+
+
+
+    // R2DBC URI
+    @GetMapping("/r2/{name}")
+    fun getByName(@PathVariable name: String): Mono<BookEntity> {
+        return bookRepository.findByName(name)
     }
 
 }
