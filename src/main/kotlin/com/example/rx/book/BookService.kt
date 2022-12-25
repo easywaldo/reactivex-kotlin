@@ -2,6 +2,7 @@ package com.example.rx.book
 
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 data class Book(val id: Int, val name: String, val price: Int)
 
@@ -16,6 +17,12 @@ class BookService {
 
     fun getAll(): Flux<Book> {
         return Flux.fromIterable(books)
+    }
+
+    fun get(id: Int): Mono<Book> {
+        return Mono.justOrEmpty(books.find {
+            it.id == id
+        })
     }
 
 }
