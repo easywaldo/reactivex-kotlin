@@ -1,19 +1,16 @@
 package com.example.rx.book
 
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import io.r2dbc.pool.ConnectionPool
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import reactor.kotlin.core.publisher.toFlux
 
 @RestController
 class BookController(
     private val bookService: BookService,
     private val bookRepository: BookEntityRepository,
+    private val connectionPool: ConnectionPool,
 ) {
     @GetMapping("/books")
     fun getAll(): Flux<Book> {
@@ -55,6 +52,29 @@ class BookController(
     @GetMapping("/r2/books")
     fun getAllByR2DBC(): Flux<BookEntity> {
         return bookRepository.findAll()
+    }
+
+    @PutMapping("/r2/books/{id}")
+    @Transactional
+    fun update(@PathVariable id: Long, @RequestBody map: Map<String, Any>): Mono<BookEntity> {
+//        this.connectionPool.create().let {
+//          it.flatMap {
+//              it.beginTransaction()
+//              bookRepository.findById(id)
+//                  .flatMap{
+//                          b ->
+//                      bookRepository.save(b.copy(name = map["name"].toString(), price = map["price"] as Int))
+//                  }
+//              it.commitTransaction()
+//              it.toMono()
+//          }
+//        }
+        val bookEntity = BookEntity(
+            id = id, name = map["name"].toString(), price = map["price"] as Int)
+        return bookRepository.findById(id).flatMap {
+            b -> bookRepository.save(bookEntity)
+        }
+
     }
 
 }
