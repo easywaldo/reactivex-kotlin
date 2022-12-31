@@ -1,6 +1,5 @@
 package com.example.rx.book
 
-import io.r2dbc.pool.ConnectionPool
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
@@ -10,7 +9,6 @@ import reactor.core.publisher.Mono
 class BookController(
     private val bookService: BookService,
     private val bookRepository: BookEntityRepository,
-    private val connectionPool: ConnectionPool,
 ) {
     @GetMapping("/books")
     fun getAll(): Flux<Book> {
@@ -57,18 +55,6 @@ class BookController(
     @PutMapping("/r2/books/{id}")
     @Transactional
     fun update(@PathVariable id: Long, @RequestBody map: Map<String, Any>): Mono<BookEntity> {
-//        this.connectionPool.create().let {
-//          it.flatMap {
-//              it.beginTransaction()
-//              bookRepository.findById(id)
-//                  .flatMap{
-//                          b ->
-//                      bookRepository.save(b.copy(name = map["name"].toString(), price = map["price"] as Int))
-//                  }
-//              it.commitTransaction()
-//              it.toMono()
-//          }
-//        }
         val bookEntity = BookEntity(
             id = id, name = map["name"].toString(), price = map["price"] as Int)
         return bookRepository.findById(id).flatMap {
