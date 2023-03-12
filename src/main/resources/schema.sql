@@ -8,4 +8,16 @@ CREATE TABLE book_entity
     primary key(id)
 );
 
-insert into book_entity (name, price) values ('코틀린 완벽 가이드', 34000)
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users
+(
+    id bigint NOT NULL AUTO_INCREMENT,
+    email varchar(150),
+    user_name varchar(100),
+    profile_url varchar(300),
+    password varchar(500),
+    created_at date,
+    updated_at date,
+    primary key(id)
+);
