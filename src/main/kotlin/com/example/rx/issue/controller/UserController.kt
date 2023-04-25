@@ -9,6 +9,7 @@ import com.example.rx.issue.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -40,5 +41,10 @@ class UserController (private val userService: UserService,
         @AuthToken token: String
     ): MeResponse {
         return MeResponse(userService.getByToken(token))
+    }
+
+    @GetMapping("/{userId}/username")
+    suspend fun getUsername(@PathVariable userId: Long): Map<String, String> {
+        return mapOf("reporter" to userService.get(userId).userName)
     }
 }
