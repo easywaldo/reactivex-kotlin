@@ -1,11 +1,13 @@
 package com.example.rx.issue.service
 
+import com.auth0.jwt.interfaces.DecodedJWT
 import com.example.rx.issue.config.JWTProperties
 import com.example.rx.issue.domain.User
 import com.example.rx.issue.domain.UserRepository
 import com.example.rx.issue.dto.SignInRequest
 import com.example.rx.issue.dto.SignInResponse
 import com.example.rx.issue.dto.SignRequest
+import com.example.rx.issue.exception.InvalidJwtTokenException
 import com.example.rx.issue.exception.PasswordNotMatchedException
 import com.example.rx.issue.exception.UserNotFoundException
 import com.example.rx.issue.utils.BCryptUtils
@@ -67,6 +69,20 @@ class UserService (
 
     suspend fun logout(token: String) {
         cacheManager.awaitEvict(token)
+    }
+
+    suspend fun getByToken(token: String): User {
+        val cachedUser = cacheManager.awaitGetOrPut(key=token, ttl = CACHE_TTL) {
+            // 캐시가 유효하지 않은 경우 작동
+            val decodedJWT: DecodedJWT = JWTUtils.decode(token, jwtProperties.secret, jwtProperties.issuer)
+            val userId: Long = decodedJWT.claims["userId"]?.asLong() ?: throw InvalidJwtTokenException()
+            get(userId)
+        }
+        return cachedUser
+    }
+
+    suspend fun get(userId: Long): User {
+        return userRepository.findById(userId) ?: throw UserNotFoundException()
     }
 
 
