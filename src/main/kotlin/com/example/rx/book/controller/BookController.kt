@@ -1,5 +1,10 @@
-package com.example.rx.book
+package com.example.rx.book.controller
 
+import com.example.rx.book.Book
+import com.example.rx.book.domain.model.BookEntity
+import com.example.rx.book.repository.BookEntityRepository
+import com.example.rx.book.BookService
+import com.example.rx.book.domain.model.AuthorEntity
 import io.r2dbc.pool.ConnectionPool
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -44,7 +49,11 @@ class BookController(
     fun create(@RequestBody map: Map<String, Any>): Mono<BookEntity> {
         val bookEntity = BookEntity(
             name=map["name"].toString(),
-            price = map["price"] as Int
+            price = map["price"] as Int,
+            author = AuthorEntity(
+                name = "un-known",
+                country = "un-known",
+            )
         )
         return bookRepository.save(bookEntity)
     }

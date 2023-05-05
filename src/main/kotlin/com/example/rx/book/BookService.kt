@@ -33,7 +33,7 @@ class BookService {
                 map -> val book = Book(
                     id=nextId.incrementAndGet(),
                     name=map["name"].toString(),
-                    price=map["price"] as Int
+                    price=map["price"] as Int,
                 )
                 books.add(book)
                 book
