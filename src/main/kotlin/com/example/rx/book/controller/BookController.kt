@@ -15,7 +15,6 @@ import reactor.core.publisher.Mono
 class BookController(
     private val bookService: BookService,
     private val bookRepository: BookEntityRepository,
-    private val connectionPool: ConnectionPool,
 ) {
     @GetMapping("/books")
     fun getAll(): Flux<Book> {
